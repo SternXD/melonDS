@@ -268,7 +268,7 @@ public:
 
     bool IrregularCycles = false;
 
-#ifdef __SWITCH__
+#if defined(__SWITCH__) || defined(__APPLE__)
     void* JitRWBase;
     void* JitRWStart;
     void* JitRXStart;

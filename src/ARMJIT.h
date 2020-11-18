@@ -62,6 +62,10 @@ void JitEnableWrite();
 void JitEnableExecute();
 }
 
+#ifdef __APPLE__
+extern "C" void ARM_Dispatch(ARM* cpu, ARMJIT::JitBlockEntry entry) asm ("ARM_Dispatch");
+#else
 extern "C" void ARM_Dispatch(ARM* cpu, ARMJIT::JitBlockEntry entry);
+#endif
 
 #endif
