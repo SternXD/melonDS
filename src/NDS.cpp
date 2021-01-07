@@ -123,6 +123,8 @@ MemRegion SWRAM_ARM7;
 
 u8* ARM7WRAM;
 
+bool SkipFrame = false;
+
 u16 ExMemCnt[2];
 
 // TODO: these belong in NDSCart!
@@ -1229,6 +1231,10 @@ void CancelEvent(u32 id)
     SchedListMask &= ~(1<<id);
 }
 
+void SetSkipFrame(bool skipFrame)
+{
+    SkipFrame = skipFrame;
+}
 
 void TouchScreen(u16 x, u16 y)
 {
