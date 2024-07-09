@@ -79,6 +79,7 @@ void DMA::Reset()
     Running = false;
     InProgress = false;
     MRAMBurstCount = 0;
+    MRAMBurstTable = DMATiming::MRAMDummy;
 }
 
 void DMA::DoSavestate(Savestate* file)
