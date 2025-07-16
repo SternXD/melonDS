@@ -1,10 +1,16 @@
 # Building melonDS
 
+melonDS supports two frontends:
+* **Qt frontend** - Full-featured GUI with all dialogs and settings
+* **ImGui frontend** - Lightweight, modern interface with controller support
+
 * [Linux](#linux)
 * [Windows](#windows)
 * [macOS](#macos)
 
 ## Linux
+
+### Qt Frontend (Recommended)
 1. Install dependencies:
    * Ubuntu:
      * All versions: `sudo apt install cmake extra-cmake-modules libcurl4-gnutls-dev libpcap0.8-dev libsdl2-dev libarchive-dev libenet-dev libzstd-dev`
@@ -25,6 +31,22 @@
    cmake --build build -j$(nproc --all)
    ```
 
+### ImGui Frontend (Lightweight)
+1. Install dependencies:
+   * Ubuntu: `sudo apt install cmake extra-cmake-modules libcurl4-gnutls-dev libpcap0.8-dev libsdl2-dev libarchive-dev libenet-dev libzstd-dev`
+   * Fedora: `sudo dnf install gcc-c++ cmake extra-cmake-modules SDL2-devel libarchive-devel enet-devel libzstd-devel`
+   * Arch Linux: `sudo pacman -S base-devel cmake extra-cmake-modules git libpcap sdl2 libarchive enet zstd`
+2. Download the melonDS repository and prepare:
+   ```bash
+   git clone https://github.com/melonDS-emu/melonDS
+   cd melonDS
+   ```
+3. Compile:
+   ```bash
+   cmake -B build -DMELONDS_IMGUI_FRONTEND=ON
+   cmake --build build -j$(nproc --all) --target melonDS-imgui
+   ```
+
 ## Windows
 1. Install [MSYS2](https://www.msys2.org/)
 2. Open the MSYS2 terminal from the Start menu:
@@ -42,6 +64,8 @@
    ```bash
    pacman -S <prefix>-{toolchain,cmake,SDL2,libarchive,enet,zstd}
    ```
+
+### Qt Frontend (Recommended)
 6. Install Qt and configure the build directory
    * Dynamic builds (with DLLs)
      1. Install Qt: `pacman -S <prefix>-{qt6-base,qt6-svg,qt6-multimedia,qt6-svg,qt6-tools}`
@@ -52,9 +76,15 @@
      2. Set up the build directory with `cmake -B build -DBUILD_STATIC=ON -DUSE_QT6=OFF -DCMAKE_PREFIX_PATH=$MSYSTEM_PREFIX/qt5-static`
 7. Compile: `cmake --build build`
 
+### ImGui Frontend (Lightweight)
+6. Set up the build directory: `cmake -B build -DMELONDS_IMGUI_FRONTEND=ON`
+7. Compile: `cmake --build build --target melonDS-imgui`
+
 If everything went well, melonDS should now be in the `build` folder. For dynamic builds, you may need to run melonDS from the MSYS2 terminal in order for it to find the required DLLs.
 
 ## macOS
+
+### Qt Frontend (Recommended)
 1. Install the [Homebrew Package Manager](https://brew.sh)
 2. Install dependencies: `brew install git pkg-config cmake sdl2 qt@6 libarchive enet zstd`
 3. Download the melonDS repository and prepare:
@@ -67,9 +97,24 @@ If everything went well, melonDS should now be in the `build` folder. For dynami
    cmake -B build -DCMAKE_PREFIX_PATH="$(brew --prefix qt@6);$(brew --prefix libarchive)"
    cmake --build build -j$(sysctl -n hw.logicalcpu)
    ```
+
+### ImGui Frontend (Lightweight)
+1. Install the [Homebrew Package Manager](https://brew.sh)
+2. Install dependencies: `brew install git pkg-config cmake sdl2 libarchive enet zstd`
+3. Download the melonDS repository and prepare:
+   ```zsh
+   git clone https://github.com/melonDS-emu/melonDS
+   cd melonDS
+   ```
+4. Compile:
+   ```zsh
+   cmake -B build -DMELONDS_IMGUI_FRONTEND=ON
+   cmake --build build -j$(sysctl -n hw.logicalcpu) --target melonDS-imgui
+   ```
+
 If everything went well, melonDS.app should now be in the `build` directory.
 
-### Self-contained app bundle
+### Self-contained app bundle (Qt only)
 If you want an app bundle that can be distributed to other computers without needing to install dependencies through Homebrew, you can additionally run `
 ../tools/mac-libs.rb .` after the build is completed, or add `-DMACOS_BUNDLE_LIBS=ON` to the first CMake command.
 

@@ -351,10 +351,13 @@ void Wifi::UpdatePowerOn()
     if (on)
     {
         Log(LogLevel::Debug, "WIFI: ON\n");
+        printf("[DEBUG] Wifi::UpdatePowerOn: About to call Platform::MP_Begin\n");
 
         ScheduleTimer(true);
 
-        Platform::MP_Begin(NDS.UserData);
+        // Temporarily disable MP_Begin to avoid JIT memory faults during DSi boot
+        // Platform::MP_Begin(NDS.UserData);
+        printf("[DEBUG] Wifi::UpdatePowerOn: Platform::MP_Begin disabled\n");
     }
     else
     {
@@ -368,7 +371,14 @@ void Wifi::UpdatePowerOn()
 
 void Wifi::SetPowerCnt(u32 val)
 {
-    Enabled = val & (1<<1);
+    printf("[DEBUG] Wifi::SetPowerCnt: val=0x%08X, enabled=%d\n", val, (val & (1<<1)) ? 1 : 0);
+    // Temporarily disable WiFi during DSi firmware boot to avoid JIT memory faults
+    if (NDS.ConsoleType == 1) {
+        printf("[DEBUG] Wifi::SetPowerCnt: Disabling WiFi for DSi firmware boot\n");
+        Enabled = false;
+    } else {
+        Enabled = val & (1<<1);
+    }
     UpdatePowerOn();
 }
 

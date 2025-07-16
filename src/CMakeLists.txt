@@ -160,6 +160,8 @@ add_subdirectory(teakra EXCLUDE_FROM_ALL)
 target_compile_options(teakra PRIVATE "$<$<CONFIG:DEBUG>:-Og>")
 target_link_libraries(core PRIVATE teakra)
 
+add_subdirectory(net)
+
 if (NOT MSVC)
     # MSVC has its own compiler flag syntax; if we ever support it,
     # be sure to add equivalent flags here.

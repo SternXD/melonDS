@@ -19,9 +19,14 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+#ifdef MELONDS_IMGUI_FRONTEND
+    // ImGui build: do not include QString
+#else
+    #include <QString>
+#endif
+
 #include <variant>
 #include <string>
-#include <QString>
 #include <unordered_map>
 #include <tuple>
 
@@ -69,8 +74,8 @@ public:
     void SetString(const int id, const std::string& val);
     void SetDouble(const int id, double val);
 
-    // convenience
-
+#ifndef MELONDS_IMGUI_FRONTEND
+    // Only for Qt build
     QString GetQString(const int id)
     {
         return QString::fromStdString(GetString(id));
@@ -80,6 +85,7 @@ public:
     {
         return SetString(id, val.toStdString());
     }
+#endif
 
 private:
     toml::value& Data;
@@ -111,6 +117,8 @@ public:
 
     // convenience
 
+#ifndef MELONDS_IMGUI_FRONTEND
+    // Only for Qt build
     QString GetQString(const std::string& path)
     {
         return QString::fromStdString(GetString(path));
@@ -120,6 +128,7 @@ public:
     {
         return SetString(path, val.toStdString());
     }
+#endif
 
 private:
     toml::value& Data;

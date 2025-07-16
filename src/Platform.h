@@ -70,6 +70,8 @@ enum StopReason {
  * use \c NDS::Stop instead.
  */
 void SignalStop(StopReason reason, void* userdata);
+bool EmuShouldStop();
+void ClearEmuShouldStop();
 
 
 /**

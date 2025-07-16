@@ -29,7 +29,45 @@
 #include "Platform.h"
 #include "Config.h"
 #include "ScreenLayout.h"
+#ifndef MELONDS_IMGUI_FRONTEND
 #include "main.h"
+#include "EmuInstance.h"
+#include "Screen.h"
+#else
+#include "../imgui_sdl/ImGuiEmuInstance.h"
+// Define constants needed for ImGui frontend
+const struct { int id; float ratio; const char* label; } aspectRatios[] =
+{
+    { 0, 1,                       "4:3 (native)" },
+    { 4, (5.f  / 3) / (4.f / 3), "5:3 (3DS)"},
+    { 1, (16.f / 9) / (4.f / 3),  "16:9" },
+    { 2, (21.f / 9) / (4.f / 3),  "21:9" },
+    { 3, 0,                       "window" }
+};
+constexpr int AspectRatiosNum = sizeof(aspectRatios) / sizeof(aspectRatios[0]);
+#endif
+
+// Add missing enum definitions for ImGui build
+#ifdef MELONDS_IMGUI_FRONTEND
+enum
+{
+    renderer3D_Software = 0,
+#ifdef OGLRENDERER_ENABLED
+    renderer3D_OpenGL,
+    renderer3D_OpenGLCompute,
+#endif
+    renderer3D_Max,
+};
+
+enum
+{
+    micInputType_Silence,
+    micInputType_External,
+    micInputType_Noise,
+    micInputType_Wav,
+    micInputType_MAX,
+};
+#endif
 
 using namespace std::string_literals;
 

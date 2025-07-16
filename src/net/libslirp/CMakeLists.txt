@@ -46,22 +46,36 @@ set(SOURCES
 
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/src/libslirp-version.h.in" "${CMAKE_CURRENT_BINARY_DIR}/libslirp-version.h")
 
-add_library(slirp STATIC ${SOURCES})
-target_compile_definitions(slirp PUBLIC LIBSLIRP_STATIC_BUILD)
-
-target_include_directories(slirp SYSTEM PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/glib")
-target_include_directories(slirp SYSTEM PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
-target_include_directories(slirp SYSTEM PUBLIC "${CMAKE_CURRENT_BINARY_DIR}")
-
-target_compile_definitions(slirp PRIVATE BUILDING_LIBSLIRP)
-target_compile_definitions(slirp PRIVATE "G_LOG_DOMAIN=\"Slirp\"")
-
-if (WIN32)
-	target_link_libraries(slirp PRIVATE ws2_32 iphlpapi)
-elseif(HAIKU)
-	target_Link_libraries(slirp PRIVATE network)
-elseif(APPLE)
-	target_link_libraries(slirp PRIVATE resolv)
+# Use unique target names to avoid conflicts between ImGui and Qt builds
+if(MELONDS_IMGUI_FRONTEND)
+    set(SLIRP_TARGET "slirp-imgui")
 else()
-	set_source_files_properties(glib/glib.c PROPERTIES COMPILE_FLAGS -fvisibility=hidden)
+    set(SLIRP_TARGET "slirp-qt")
+endif()
+
+# Check if target already exists before creating it
+if(NOT TARGET ${SLIRP_TARGET})
+    add_library(${SLIRP_TARGET} STATIC ${SOURCES})
+endif()
+
+# Only set properties if the target exists
+if(TARGET ${SLIRP_TARGET})
+    target_compile_definitions(${SLIRP_TARGET} PUBLIC LIBSLIRP_STATIC_BUILD)
+
+    target_include_directories(${SLIRP_TARGET} SYSTEM PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/glib")
+    target_include_directories(${SLIRP_TARGET} SYSTEM PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
+    target_include_directories(${SLIRP_TARGET} SYSTEM PUBLIC "${CMAKE_CURRENT_BINARY_DIR}")
+
+    target_compile_definitions(${SLIRP_TARGET} PRIVATE BUILDING_LIBSLIRP)
+    target_compile_definitions(${SLIRP_TARGET} PRIVATE "G_LOG_DOMAIN=\"Slirp\"")
+
+    if (WIN32)
+        target_link_libraries(${SLIRP_TARGET} PRIVATE ws2_32 iphlpapi)
+    elseif(HAIKU)
+        target_Link_libraries(${SLIRP_TARGET} PRIVATE network)
+    elseif(APPLE)
+        target_link_libraries(${SLIRP_TARGET} PRIVATE resolv)
+    else()
+        set_source_files_properties(glib/glib.c PROPERTIES COMPILE_FLAGS -fvisibility=hidden)
+    endif()
 endif()

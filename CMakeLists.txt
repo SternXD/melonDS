@@ -99,9 +99,14 @@ if (ENABLE_GDBSTUB)
 endif()
 
 option(BUILD_QT_SDL "Build Qt/SDL frontend" ON)
+option(BUILD_IMGUI_SDL "Build ImGui/SDL frontend" ON)
 
 add_subdirectory(src)
 
 if (BUILD_QT_SDL)
     add_subdirectory(src/frontend/qt_sdl)
+endif()
+
+if (BUILD_IMGUI_SDL)
+    add_subdirectory(src/frontend/imgui_sdl)
 endif()

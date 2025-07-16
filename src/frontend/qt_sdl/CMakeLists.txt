@@ -93,7 +93,7 @@ add_executable(melonDS ${SOURCES_QT_SDL})
 add_subdirectory("../../net"
     ${CMAKE_BINARY_DIR}/net)
 
-target_link_libraries(melonDS PRIVATE net-utils)
+target_link_libraries(melonDS PRIVATE net-utils-qt)
 
 if (WIN32)
     target_link_libraries(melonDS PUBLIC opengl32)
@@ -172,7 +172,8 @@ endif()
 
 target_include_directories(melonDS PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/..")
+    "${CMAKE_CURRENT_SOURCE_DIR}/.."
+    "${CMAKE_CURRENT_SOURCE_DIR}/../glad")
 
 if (USE_QT6)
     target_include_directories(melonDS PUBLIC ${Qt6Gui_PRIVATE_INCLUDE_DIRS})
@@ -254,9 +255,8 @@ elseif(APPLE)
 endif()
 
 if (ENABLE_OGLRENDERER)
-    set(MELONDS_GL_HEADER \"frontend/glad/glad.h\" CACHE STRING "Path to a header that contains OpenGL function and type declarations.")
-
+    # Qt frontend uses GLAD for OpenGL headers
     target_compile_definitions(melonDS PUBLIC OGLRENDERER_ENABLED)
-    target_compile_definitions(melonDS PUBLIC MELONDS_GL_HEADER=${MELONDS_GL_HEADER})
-    target_compile_definitions(core PUBLIC MELONDS_GL_HEADER=${MELONDS_GL_HEADER})
+    target_compile_definitions(melonDS PUBLIC MELONDS_GL_HEADER="frontend/glad/glad.h")
+    target_compile_definitions(core PUBLIC MELONDS_GL_HEADER="frontend/glad/glad.h")
 endif()
